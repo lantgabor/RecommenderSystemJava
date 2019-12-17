@@ -20,12 +20,12 @@ public class Main {
 
         int N = R.length;
         int M = R[0].length;
-        int K = 3;
+        int K = 4;
 
         double[][] P = Matrix.random(N,K);
         double[][] Q = Matrix.random(M,K);
 
-        int s = 1500;
+        int s = 1750;
         double a = 0.0002;
         double b = 0.02;
 
@@ -33,28 +33,24 @@ public class Main {
 
         double[][] nR = Matrix.multiply(P, Matrix.transpose(Q));
 
-        for(int i = 0; i < R.length; i++){
-            ArrayList<Integer> tmp = recommendTopN(10, R[i], nR[i]);
-            for(int j = 0; j < tmp.size(); j++) {
-                System.out.print((int) j);
-                if(j < tmp.size()-1) System.out.print('\t');
+        int topN = 10;
+
+        for(int j = 0; j < nR.length; j++) {
+            int n = 0;
+            int[] tmp = ArrayUtils.argsort(nR[j], false);
+            for (int i = 0; i < tmp.length; i++) {
+                if(R[j][tmp[i]] == 0) {
+                    if(n < topN) {
+                        System.out.print(tmp[i]);
+                        if (n < topN -1) System.out.print('\t');
+                        n++;
+                    }
+                }
             }
             System.out.print('\n');
         }
     }
 
-    public static ArrayList<Integer> recommendTopN(int N, double[] Ri, double[] nRi){
-        int n = 0;
-        int[] Top = ArrayUtils.argsort(nRi, false);
-        ArrayList<Integer> TopN = new ArrayList<>();
-        for(int i = 0; i < Top.length; i++){
-            if(Ri[Top[i]] == 0 && n < N) {
-                TopN.add(Top[i]);
-                n++;
-            }
-        }
-        return TopN;
-    }
 
     public static void matrix_factor(double[][] R, double[][] P, double[][] Q, int K, int steps, double alpha, double beta){
         for(int step = 0; step < steps; step++){
@@ -87,7 +83,7 @@ public class Main {
 }
 /*
 Teszt adatok
-12 5 4
+13 5 4
 0 0 5
 0 1 3
 0 3 1
@@ -96,6 +92,7 @@ Teszt adatok
 2 0 1
 2 1 1
 2 3 5
+3 0 1
 3 3 4
 4 1 1
 4 2 5
